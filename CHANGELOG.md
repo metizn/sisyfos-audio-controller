@@ -2,6 +2,102 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.13.0](https://github.com/olzzon/sisyfos-audio-controller/compare/v2.12.0...v2.13.0) (2020-04-24)
+
+
+### Features
+
+* Behringer X32 gain reduction meter ([c0e3469](https://github.com/olzzon/sisyfos-audio-controller/commit/c0e3469a48965542487b0e10e3561c603aabe268))
+* Behringer XR & Midas MR series Gain reduction. (rest of ch strip to be implemented) ([c81a7f4](https://github.com/olzzon/sisyfos-audio-controller/commit/c81a7f417188a082cd6d56f841baf7c707a1ceaa))
+* Behringer XR-Midas MR support mute-eq,comp,aux ([9df30ba](https://github.com/olzzon/sisyfos-audio-controller/commit/9df30bacd3c22050d13ba8352fe26fbc33c19a41))
+* Gain reduction meter & preparing Behringer XR protocol ([17510ab](https://github.com/olzzon/sisyfos-audio-controller/commit/17510abb784eda1cef9b1d328559b07ad0413ef6))
+* Vista 1-5-9 support fader level from Sisyfos on mono, st, and 5.1 channels ([5cf60b4](https://github.com/olzzon/sisyfos-audio-controller/commit/5cf60b4dd3282a4ad88a3feabbb358780fc29fff))
+
+
+### Bug Fixes
+
+* check if fader exists before requesting from mixer ([8c06344](https://github.com/olzzon/sisyfos-audio-controller/commit/8c06344a57285e215ae282aa872bf40c9963eb30))
+* reduction meter middler and upper rendering ([589d936](https://github.com/olzzon/sisyfos-audio-controller/commit/589d9365aa143c6fe348fd840647f288bda4ad36))
+* update Next Aux level in OSC protocol (behringer, Midas etc.) ([38a6ec7](https://github.com/olzzon/sisyfos-audio-controller/commit/38a6ec7ccff31953413ec273908832f263758d16))
+* update Next aux when changing fader level while it´s on ([2480904](https://github.com/olzzon/sisyfos-audio-controller/commit/248090484177d70e665aa42ff26335d9b372ed0a))
+* when receiving aux level, only set it of aux is assigned in sisyfos (to be able to only control the ones that the use should control and not all) ([afcc4cd](https://github.com/olzzon/sisyfos-audio-controller/commit/afcc4cdf6267e05371c27556385fa75a1b31ff85))
+
+## [2.12.0](https://github.com/olzzon/sisyfos-audio-controller/compare/v2.11.0...v2.12.0) (2020-04-02)
+
+
+### Features
+
+* Studer - handle up to 95 channels on OnAir 3000. Prepare Vista handling ([9c50bba](https://github.com/olzzon/sisyfos-audio-controller/commit/9c50bbab7876624130c74d15cfc0233b14c36936))
+* Studer Vista ([baa248e](https://github.com/olzzon/sisyfos-audio-controller/commit/baa248e58deb532b0f62a182692512cb47713c85))
+* Vista 1-5-9 Encoding Mono channels including level (using BER) ([ca05cb3](https://github.com/olzzon/sisyfos-audio-controller/commit/ca05cb317686399aa6e7ca9b26461c4d59824f30))
+* vista support for mono, stereo and 51 channels ([33633e7](https://github.com/olzzon/sisyfos-audio-controller/commit/33633e7bd89ee9cab38bb75c937220a1425ad943))
+
+
+### Bug Fixes
+
+* **CasparCG:** Fixes VU meters for CasparCG ([1899d1f](https://github.com/olzzon/sisyfos-audio-controller/commit/1899d1f6ba0beb8b68012122e176b9d023d1c892))
+* **CasparCG:** Typo fix in ccg route source ([fb0c0f8](https://github.com/olzzon/sisyfos-audio-controller/commit/fb0c0f84cfa7a104e3c50d2af71ea8171a10b962))
+* chan strip refered to channeltype when label was empty ([b996d63](https://github.com/olzzon/sisyfos-audio-controller/commit/b996d632debd657f3871bf482093eba3748ee07e))
+* double import of sockerServer in CasparCGConnection.ts forgot to remove in  merge ([cbc2ebe](https://github.com/olzzon/sisyfos-audio-controller/commit/cbc2ebe2c8bf104c0ff16238b8cd40128e508841))
+* faders should not overlap buttons ([d976aa3](https://github.com/olzzon/sisyfos-audio-controller/commit/d976aa324e6033c32b0d123a1d1bdf54c000137b))
+* prevent scrolling of parent when in an iframe ([bb48c54](https://github.com/olzzon/sisyfos-audio-controller/commit/bb48c54d8bb2d5b8489b8e894188eb705610f7e3))
+* Studer update faders with log scale ([a6e1b24](https://github.com/olzzon/sisyfos-audio-controller/commit/a6e1b241ae99ef080ff7898bd6a06aaaccee11f5))
+* update yarn to support BER in Vista mixer connection ([722dc5d](https://github.com/olzzon/sisyfos-audio-controller/commit/722dc5d3c062cf6c40e700e0fb1c8fe70d85fab3))
+* when dragging a fader mouseUp could trigger other buttons. ([145423e](https://github.com/olzzon/sisyfos-audio-controller/commit/145423e9a02e7ea6942b829eff1c18f6f4164f31))
+
+## [2.11.0](https://github.com/olzzon/sisyfos-audio-controller/compare/v2.10.1...v2.11.0) (2020-03-25)
+
+
+### Features
+
+* Studer OnAir support ([02acbbe](https://github.com/olzzon/sisyfos-audio-controller/commit/02acbbe7343aab2edfb069816e25a060fe51fc95))
+* Studer support - basic level for OnAir3000 ([b7ca75f](https://github.com/olzzon/sisyfos-audio-controller/commit/b7ca75f9cb57ef0f5dd42ce8be8401a381e0d59a))
+* **CasparCG:** adds route producer as source ([7d8aaf2](https://github.com/olzzon/sisyfos-audio-controller/commit/7d8aaf29a992847855e2a3f18262414d796277b0))
+* **Server:** Adds logline on server address on startup ([fe87c65](https://github.com/olzzon/sisyfos-audio-controller/commit/fe87c653fe7e26df5a01038bf44be7710b121076))
+
+
+### Bug Fixes
+
+* comment out unused in studer protocol ([0219964](https://github.com/olzzon/sisyfos-audio-controller/commit/02199645a6ca2a4bbb33724febed68760fbea10c))
+* **CasparCG:** Compatibility between Decklink and Route sources ([4b3c63d](https://github.com/olzzon/sisyfos-audio-controller/commit/4b3c63d3e694f279fe8c6baef56691c21c0d0bbe))
+* **CasparCG:** Compatible with CCG Server 2.1.11.NRK route producer ([a39edcb](https://github.com/olzzon/sisyfos-audio-controller/commit/a39edcb914ec46a653a5758cb0802701f4b777f3))
+* changed logger.info to logger.error in casparCGConnection ([ec1fc67](https://github.com/olzzon/sisyfos-audio-controller/commit/ec1fc670e4a87349577ae52bd94dc5bae7ae621a))
+
+### [2.10.1](https://github.com/olzzon/sisyfos-audio-controller/compare/v2.10.0...v2.10.1) (2020-03-24)
+
+
+### Bug Fixes
+
+* changed logger.info to logger.error in casparCGConnection ([5541b94](https://github.com/olzzon/sisyfos-audio-controller/commit/5541b9442ccf3d918be4b2ae5c5e977556ba1ea7))
+* Client indicate when server is offline ([5ec04a7](https://github.com/olzzon/sisyfos-audio-controller/commit/5ec04a7bdfd0fe70209505a55257a27cdd47130e))
+* rename "Offtube mode" to "Eq-Comp-Aux in chstrip" ([1b10cb4](https://github.com/olzzon/sisyfos-audio-controller/commit/1b10cb4953dad6f30602ab876aad8229c638db00))
+* show CasparCG source select no matter whether Offtube Mode is selected ([696dfed](https://github.com/olzzon/sisyfos-audio-controller/commit/696dfed45f2a9e280a35d168a54c8cc899213bf7))
+
+## [2.10.0](https://github.com/olzzon/sisyfos-audio-controller/compare/v2.9.5...v2.10.0) (2020-03-19)
+
+
+### Features
+
+* change emberplus to other repo ([e50b9b7](https://github.com/olzzon/sisyfos-audio-controller/commit/e50b9b7ff0cf967bb451836a31790bb5a3feba9d))
+* ember - make dedicated sendOutLevelMessage instead of a generic one where you have to do a getElementByPath each time ([4034bf5](https://github.com/olzzon/sisyfos-audio-controller/commit/4034bf59f5c06f665ac34ea5376831fb6c883142))
+* Ember - use timeout-hack for better Lawo support ([2b508f2](https://github.com/olzzon/sisyfos-audio-controller/commit/2b508f21b5d958341bda4910b82cdf3804d81f03))
+* Ember connection set up differently ([bc6c6bd](https://github.com/olzzon/sisyfos-audio-controller/commit/bc6c6bd4682a14989c6852928f3869d28ba2451b))
+* Ember Lawo - use master branch on https://github.com/dufourgilles/node-emberplus.git ([54eb20a](https://github.com/olzzon/sisyfos-audio-controller/commit/54eb20a99af4c3baee958f151dc74cdd73b93cc4))
+* FADE_DISPATCH_RESOLUTION constant are moved to protocol to enable fever commands on slow protocols ([18fd425](https://github.com/olzzon/sisyfos-audio-controller/commit/18fd42539789a23a0f4613c6868e73b36fa01a20))
+* lawo-mc - add files for last commit ([e29831f](https://github.com/olzzon/sisyfos-audio-controller/commit/e29831fc05e0c9b5cd8639c460244e1e15a4c091))
+* lawo-mc - create LawoMC protocol. (not configures yet) ([7d963a5](https://github.com/olzzon/sisyfos-audio-controller/commit/7d963a52918203df44a01f63e7d62302005bcd79))
+* Lawo-MC fader level added to protocol. ([ad26a6b](https://github.com/olzzon/sisyfos-audio-controller/commit/ad26a6bff9e27bf5e93657f4d55e6c1de416b8d4))
+* LawoRuby - initial protocol ([d96533d](https://github.com/olzzon/sisyfos-audio-controller/commit/d96533d6f5c1633719b8875b223838283d9cd3c7))
+* minimonitorview - css tweaks ([db5d617](https://github.com/olzzon/sisyfos-audio-controller/commit/db5d617e751f0d3ffb7437eb0f75476cb7707bc1))
+* minimonitorview - label in monitor settings ([60b6a4c](https://github.com/olzzon/sisyfos-audio-controller/commit/60b6a4cf08652764132b59c4d3ae4c622f06a1a9))
+* monitorview - settings in monitor setup, stored server side ([8837fce](https://github.com/olzzon/sisyfos-audio-controller/commit/8837fceeeb29fc007a3740d252a1de33126a77d6))
+
+
+### Bug Fixes
+
+* casparCGMaster protocol should not be able to be undefined (a template is always loaded) ([477549e](https://github.com/olzzon/sisyfos-audio-controller/commit/477549e88b0e7886dd905103df08ebde263b59c3))
+* internal levels are always 0-1 conversion to protocol level must take place in the protocols mixerconnection ([88dd14f](https://github.com/olzzon/sisyfos-audio-controller/commit/88dd14f392f407a229e0fa4163f64b36076b9d79))
+
 ### [2.9.5](https://github.com/olzzon/sisyfos-audio-controller/compare/v2.9.4...v2.9.5) (2020-02-16)
 
 

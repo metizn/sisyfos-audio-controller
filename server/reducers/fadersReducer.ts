@@ -15,6 +15,7 @@ import {
     TOGGLE_SNAP,
     SET_VO,
     SET_VU_LEVEL,
+    SET_VU_REDUCTION_LEVEL,
     SHOW_CHANNEL,
     IGNORE_AUTOMATION,
     SNAP_RECALL,
@@ -32,7 +33,8 @@ import {
     SET_FADER_MID,
     SET_FADER_HIGH,
     SET_FADER_MONITOR,
-    SET_SINGLE_FADER_STATE
+    SET_SINGLE_FADER_STATE,
+    SHOW_IN_MINI_MONITOR
 } from '../reducers/faderActions'
 
 export interface IFaders {
@@ -58,12 +60,14 @@ export interface IFader {
     delayTime: number
     monitor: number,
     showChannel: boolean,
+    showInMiniMonitor: boolean,
     ignoreAutomation: boolean,
     snapOn: Array<boolean>,
 }
 
 export interface IVuMeters {
-    vuVal: number
+    vuVal: number,
+    reductionVal: number
 }
 
 const defaultFadersReducerState = (numberOfFaders: number): IFaders[] => {
@@ -92,11 +96,13 @@ const defaultFadersReducerState = (numberOfFaders: number): IFaders[] => {
                 delayTime: 0,
                 monitor: (index + 1), // route fader - aux 1:1 as default
                 showChannel: true,
+                showInMiniMonitor: false,
                 ignoreAutomation: false,
                 snapOn: [],
             });
             defaultObj[0].vuMeters.push({
-                vuVal: 0.0
+                vuVal: 0.0,
+                reductionVal: 0.0,
             });
             for (let y=0; y < DEFAULTS.NUMBER_OF_SNAPS; y++) {
                 defaultObj[0].fader[index].snapOn.push(false);
@@ -116,6 +122,11 @@ export const faders = ((state = defaultFadersReducerState(0), action: any): Arra
         case SET_VU_LEVEL: //channel:  level:
             if (typeof nextState[0].vuMeters[action.channel] !== 'undefined') {
                 nextState[0].vuMeters[action.channel].vuVal = parseFloat(action.level);
+            }
+            return nextState;
+        case SET_VU_REDUCTION_LEVEL: //channel:  level:
+            if (typeof nextState[0].vuMeters[action.channel] !== 'undefined') {
+                nextState[0].vuMeters[action.channel].reductionVal = parseFloat(action.level);
             }
             return nextState;
         case SET_COMPLETE_FADER_STATE: //allState  //numberOfChannels
@@ -217,6 +228,9 @@ export const faders = ((state = defaultFadersReducerState(0), action: any): Arra
             return nextState;
         case SHOW_CHANNEL: //channel // showChannel
             nextState[0].fader[action.channel].showChannel = !!action.showChannel;
+            return nextState;
+        case SHOW_IN_MINI_MONITOR: //faderIndexz // showInMiniMonitor
+            nextState[0].fader[action.faderIndex].showInMiniMonitor = !!action.showInMiniMonitor;
             return nextState;
         case IGNORE_AUTOMATION: //channel // ignoreAutomation
             nextState[0].fader[action.channel].ignoreAutomation = !nextState[0].fader[action.channel].ignoreAutomation

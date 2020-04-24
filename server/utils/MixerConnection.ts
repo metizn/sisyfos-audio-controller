@@ -9,6 +9,8 @@ import { MidiMixerConnection } from './mixerConnections/MidiMixerConnection';
 import { QlClMixerConnection } from './mixerConnections/YamahaQlClConnection';
 import { SSLMixerConnection } from './mixerConnections/SSLMixerConnection';
 import { EmberMixerConnection } from './mixerConnections/EmberMixerConnection';
+import { StuderMixerConnection } from './mixerConnections/StuderMixerConnection';
+import { StuderVistaMixerConnection } from './mixerConnections/StuderVistaMixerConnection';
 import { CasparCGConnection } from './mixerConnections/CasparCGConnection';
 import { IChannel } from '../reducers/channelsReducer';
 import { SET_OUTPUT_LEVEL, FADE_ACTIVE } from '../reducers/channelActions'
@@ -18,7 +20,6 @@ import { SET_FADER_LEVEL } from  '../reducers/faderActions'
 // FADE_INOUT_SPEED defines the resolution of the fade in ms
 // The lower the more CPU
 const FADE_INOUT_SPEED = 3;
-const FADE_DISPATCH_RESOLUTION = 5;
 
 export class MixerGenericConnection {
     store: any;
@@ -47,6 +48,10 @@ export class MixerGenericConnection {
             this.mixerConnection = new CasparCGConnection(this.mixerProtocol as ICasparCGMixerGeometry);
         } else if (this.mixerProtocol.protocol === 'EMBER') {
             this.mixerConnection = new EmberMixerConnection(this.mixerProtocol as IMixerProtocol);
+        } else if (this.mixerProtocol.protocol === 'STUDER') {
+            this.mixerConnection = new StuderMixerConnection(this.mixerProtocol as IMixerProtocol);
+        } else if (this.mixerProtocol.protocol === 'VISTA') {
+            this.mixerConnection = new StuderVistaMixerConnection(this.mixerProtocol as IMixerProtocol);
         } else if (this.mixerProtocol.protocol === 'SSL') {
             this.mixerConnection = new SSLMixerConnection(this.mixerProtocol as IMixerProtocol);
         }
@@ -58,7 +63,7 @@ export class MixerGenericConnection {
 
 
     checkForAutoResetThreshold(channel: number) {
-        if (state.faders[0].fader[channel].faderLevel <= this.mixerProtocol.fader.min + (this.mixerProtocol.fader.max * state.settings[0].autoResetLevel / 100)) {
+        if (state.faders[0].fader[channel].faderLevel <= state.settings[0].autoResetLevel / 100) {
             store.dispatch({
                 type: SET_FADER_LEVEL,
                 channel: channel,
@@ -254,7 +259,7 @@ export class MixerGenericConnection {
             targetVal = targetVal * (100-state.settings[0].voLevel)/100 
         }
         const step: number = (targetVal-outputLevel)/(fadeTime/FADE_INOUT_SPEED);
-        const dispatchResolution: number = FADE_DISPATCH_RESOLUTION*step;
+        const dispatchResolution: number = this.mixerProtocol.FADE_DISPATCH_RESOLUTION*step;
         let dispatchTrigger: number = 0;
         this.clearTimer(channelIndex)
 
@@ -322,9 +327,8 @@ export class MixerGenericConnection {
 
     fadeDown(channelIndex: number, fadeTime: number) {
         let outputLevel = state.channels[0].channel[channelIndex].outputLevel;
-        const min = this.mixerProtocol.channelTypes[0].toMixer.CHANNEL_OUT_GAIN[0].min;
-        const step = (outputLevel-min)/(fadeTime/FADE_INOUT_SPEED);
-        const dispatchResolution: number = FADE_DISPATCH_RESOLUTION*step;
+        const step = (outputLevel)/(fadeTime/FADE_INOUT_SPEED);
+        const dispatchResolution: number = this.mixerProtocol.FADE_DISPATCH_RESOLUTION*step;
         let dispatchTrigger: number = 0;
 
         this.clearTimer(channelIndex)
@@ -343,8 +347,8 @@ export class MixerGenericConnection {
                 dispatchTrigger = 0;
             }
 
-            if ( outputLevel <= min ){
-                outputLevel=min;
+            if ( outputLevel <= 0 ){
+                outputLevel=0
                 this.mixerConnection.updateFadeIOLevel(channelIndex, outputLevel);
                 this.clearTimer(channelIndex)
                 store.dispatch({

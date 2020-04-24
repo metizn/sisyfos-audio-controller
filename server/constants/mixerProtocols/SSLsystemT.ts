@@ -3,8 +3,8 @@ import { IMixerProtocol, emptyMixerMessage } from '../MixerProtocolInterface';
 export const SSLSystemT: IMixerProtocol = {
     protocol: 'SSL',
     label: 'SSL System T',
-    mode: "master", //master (ignores mixers faderlevel, and use faderlevel as gain preset),
-                    //client (use feedback from mixers fader level)
+    mode: "master",
+    FADE_DISPATCH_RESOLUTION: 5,
     leadingZeros: false,
     pingCommand: [emptyMixerMessage()],
     pingResponseCommand: [emptyMixerMessage()],
@@ -14,9 +14,9 @@ export const SSLSystemT: IMixerProtocol = {
         channelTypeName: 'CH',
         channelTypeColor: '#2f2f2f',
         fromMixer: {
-            CHANNEL_FADER_LEVEL: [emptyMixerMessage()], // Handled by SSLMixerconnection
             CHANNEL_OUT_GAIN: [emptyMixerMessage()],    // Handled by SSLMixerconnection
             CHANNEL_VU: [emptyMixerMessage()],          // Not implemented in SSL Automation protocol yet
+            CHANNEL_VU_REDUCTION: [emptyMixerMessage()],
             CHANNEL_NAME: [emptyMixerMessage()],
             PFL: [emptyMixerMessage()],
             NEXT_SEND: [emptyMixerMessage()],
@@ -32,7 +32,6 @@ export const SSLSystemT: IMixerProtocol = {
             CHANNEL_MUTE_OFF: [emptyMixerMessage()]
         },
         toMixer: {
-            CHANNEL_FADER_LEVEL: [emptyMixerMessage()],
             CHANNEL_OUT_GAIN: [{ mixerMessage: "f1 06 00 80 00 {channel} {level}", value: 0, type: '', min: 0, max: 1, zero: 0.75}],
             CHANNEL_NAME: [emptyMixerMessage()],
             PFL_ON: [{ mixerMessage: "f1 05 00 80 05 {channel} 01", value: 0, type: '', min: 0, max: 1, zero: 0.75}],

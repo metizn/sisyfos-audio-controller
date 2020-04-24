@@ -7,6 +7,7 @@ import '../assets/css/App.css';
 import Channels from './Channels';
 import Settings from './Settings';
 import Storage from './RoutingStorage'
+import MiniChannels from './MiniChannels';
 
 export interface IAppProps {
     store: IStore
@@ -29,6 +30,7 @@ class App extends React.Component<IAppProps> {
     public shouldComponentUpdate(nextProps: IAppProps) {
         return (
             nextProps.store.settings[0].showSettings != this.props.store.settings[0].showSettings
+            || nextProps.store.settings[0].serverOnline != this.props.store.settings[0].serverOnline
             || nextProps.store.settings[0].showStorage != this.props.store.settings[0].showStorage
         )
     }
@@ -71,7 +73,15 @@ class App extends React.Component<IAppProps> {
     render() {
         return (
         <div>
-            <Channels />
+            {!this.props.store.settings[0].serverOnline ? 
+                <div className="server-offline">
+                    TRYING TO CONNECT TO SISYFOS SERVER
+                </div> 
+            :
+                 null 
+            }
+            {!window.location.search.includes('minimonitor=1') ? <Channels /> : null }
+            {window.location.search.includes('minimonitor=1') ? <MiniChannels /> : null }
             {this.props.store.settings[0].showStorage ? <Storage/> : null}
             {this.props.store.settings[0].showSettings ? <Settings/> : null}
         </div>

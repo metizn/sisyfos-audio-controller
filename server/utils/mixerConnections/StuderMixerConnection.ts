@@ -12,7 +12,7 @@ import {
 import { logger } from '../logger';
 
 
-export class EmberMixerConnection {
+export class StuderMixerConnection {
     mixerProtocol: IMixerProtocol
     emberConnection: EmberClient
     deviceRoot: any;
@@ -49,16 +49,7 @@ export class EmberMixerConnection {
         let deviceRoot: any;
         this.emberConnection.connect()
         .then(() => {
-            console.log("Getting Directory")
-            return this.emberConnection.getDirectory();
-        })
-        .then((r: any) => {
-            console.log("Directory :", r);
-            this.deviceRoot = r;
-            this.emberConnection.expand(r.elements[0])
-            .then(() => {
-                this.setupMixerConnection();
-            })
+            this.setupMixerConnection();
         })
         .catch((e: any) => {
             console.log(e.stack);
@@ -162,6 +153,7 @@ export class EmberMixerConnection {
             channelString
         )
 
+/*
         this.emberConnection.getElementByPath(message)
         .then((element: any) => {
             logger.verbose('Sending out message : ' + message)
@@ -173,17 +165,39 @@ export class EmberMixerConnection {
         .catch((error: any) => {
             console.log("Ember Error ", error)
         })
+        */
     }
 
     sendOutLevelMessage(channel: number, value: number) {
-        logger.verbose('Sending out Level: ' + String(value) + ' To Path : ' + JSON.stringify(this.emberNodeObject[channel]))
-        this.emberConnection.setValueNoAck(
-            this.emberNodeObject[channel-1],
-            value
-        )
-        .catch((error: any) => {
-            console.log("Ember Error ", error)
-        })
+        let levelMessage: string
+        let channelVal: number
+        let channelType = state.channels[0].channel[channel - 1].channelType;
+        let channelTypeIndex = state.channels[0].channel[channel - 1].channelTypeIndex;
+
+        if (channel<25) {
+            levelMessage = this.mixerProtocol.channelTypes[channelType].toMixer.CHANNEL_OUT_GAIN[0].mixerMessage
+            channelVal = 160 + channelTypeIndex + 1
+        } else {
+            levelMessage = this.mixerProtocol.channelTypes[channelType].toMixer.CHANNEL_OUT_GAIN[1].mixerMessage
+            channelVal = channelTypeIndex + 1
+        }
+
+        let valueNumber = value
+        let valueByte = new Uint8Array([
+            (valueNumber & 0x0000ff00) >> 8,
+            (valueNumber & 0x000000ff),
+        ])
+        let channelByte = new Uint8Array([
+            (channelVal & 0x000000ff),
+        ])
+        
+        levelMessage = levelMessage.replace('{channel}', ('0' + channelByte[0].toString(16)).slice(-2))
+        levelMessage = levelMessage.replace('{level}', ('0' + valueByte[0].toString(16)).slice(-2) + ' ' + ('0' + valueByte[1].toString(16)).slice(-2))
+
+        let hexArray = levelMessage.split(' ')
+        let buf = new Buffer(hexArray.map((val:string) => { return parseInt(val, 16) }))
+        this.emberConnection._client.socket.write(buf)
+        logger.verbose("Send HEX: " + levelMessage) 
     }
 
     sendOutRequest(mixerMessage: string, channel: number) {
@@ -202,10 +216,14 @@ export class EmberMixerConnection {
     }
 
     updateOutLevel(channelIndex: number) {
-        let channelType = state.channels[0].channel[channelIndex].channelType;
         let channelTypeIndex = state.channels[0].channel[channelIndex].channelTypeIndex;
-        let protocol = this.mixerProtocol.channelTypes[channelType].toMixer.CHANNEL_OUT_GAIN[0]
-        let level = (state.channels[0].channel[channelIndex].outputLevel - protocol.min) * (protocol.max - protocol.min)
+        let outputlevel = state.channels[0].channel[channelIndex].outputLevel
+        let level = 20 * Math.log((1.3*outputlevel)/0.775)
+        if (level < -90) {
+            level = -90
+        }
+        // console.log('Log level :', level)
+
         this.sendOutLevelMessage(
             channelTypeIndex+1,
             level,
@@ -213,10 +231,12 @@ export class EmberMixerConnection {
     }
 
     updateFadeIOLevel(channelIndex: number, outputLevel: number) {
-        let channelType = state.channels[0].channel[channelIndex].channelType;
         let channelTypeIndex = state.channels[0].channel[channelIndex].channelTypeIndex;
-        let protocol = this.mixerProtocol.channelTypes[channelType].toMixer.CHANNEL_OUT_GAIN[0]
-        let level = (outputLevel - protocol.min) * (protocol.max - protocol.min)
+        let level = 20 * Math.log((1.3*outputLevel)/0.775)
+        if (level < -90) {
+            level = -90
+        }
+        // console.log('Log level :', level)
 
         this.sendOutLevelMessage(
             channelTypeIndex+1,

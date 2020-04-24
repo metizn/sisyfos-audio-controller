@@ -90,13 +90,11 @@ let geometry: ICasparCGMixerGeometryFile = {
 	}
 }
 
-let CasparCGMasterObject: ICasparCGMixerGeometry | undefined = undefined
-
-if (geometry) {
-	CasparCGMasterObject = {
+let CasparCGMasterObject: ICasparCGMixerGeometry = {
 		protocol: 'CasparCG',
 		label: `CasparCG Audio Mixer`,
-		mode: "master", //master (ignores mixers faderlevel, and use faderlevel as gain preset),
+		mode: "master",
+		FADE_DISPATCH_RESOLUTION: 5,
 		studio: "studio0",
 		leadingZeros: false,
 		pingTime: 0,
@@ -123,9 +121,9 @@ if (geometry) {
             channelTypeName: 'CH',
             channelTypeColor: '#2f2f2f',
             fromMixer: {
-                CHANNEL_FADER_LEVEL: [{ mixerMessage: 'none', value: 0, type: 'f', min: 0, max: 1.5, zero: 1}],
                 CHANNEL_OUT_GAIN: [{ mixerMessage: 'none', value: 0, type: 'f', min: 0, max: 1.5, zero: 1}],
-                CHANNEL_VU: [emptyMixerMessage()],
+				CHANNEL_VU: [emptyMixerMessage()],
+				CHANNEL_VU_REDUCTION: [emptyMixerMessage()],
                 CHANNEL_NAME: [emptyMixerMessage()],
                 PFL: [emptyMixerMessage()],
 				NEXT_SEND: [emptyMixerMessage()],
@@ -141,7 +139,6 @@ if (geometry) {
             CHANNEL_MUTE_OFF: [emptyMixerMessage()]
             },
             toMixer: {
-                CHANNEL_FADER_LEVEL: [{ mixerMessage: 'none', value: 0, type: 'f', min: 0, max: 1.5, zero: 1}],
                 CHANNEL_OUT_GAIN: [{ mixerMessage: 'none', value: 0, type: 'f', min: 0, max: 1.5, zero: 1}],
                 CHANNEL_NAME: [emptyMixerMessage()],
                 PFL_ON: [emptyMixerMessage()],
@@ -160,6 +157,5 @@ if (geometry) {
             },
         }]
 	}
-}
 
 export const CasparCGMaster = CasparCGMasterObject

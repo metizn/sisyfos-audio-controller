@@ -3,18 +3,21 @@ import { ReaperMaster } from './mixerProtocols/reaperMaster';
 import { BehringerXrMaster } from './mixerProtocols/behringerXrMaster';
 import { MidasMaster } from './mixerProtocols/midasMaster';
 import { GenericMidi } from './mixerProtocols/genericMidi';
-import { LawoClient } from './mixerProtocols/EmberLawo';
+import { LawoRelayVrx4 } from './mixerProtocols/LawoRelayVrx4';
+import { LawoMC2 } from  './mixerProtocols/LawoMC2'
+import { LawoRuby } from  './mixerProtocols/LawoRuby'
 import { CasparCGMaster } from './mixerProtocols/casparCGMaster';
 import { DMXIS } from './mixerProtocols/DmxIs';
 import { YamahaQLCL } from './mixerProtocols/yamahaQLCL'
 import { SSLSystemT } from './mixerProtocols/SSLsystemT'
+import { StuderOnAirMaster } from './mixerProtocols/StuderOnAirEmber';
+import { StuderVistaMaster } from './mixerProtocols/StuderVistaEmber';
 
 interface IMessageProtocol {
     mixerMessage: string,
     value: any,
     type: string
 }
-import { StuderVistaMaster } from './mixerProtocols/StuderVistaEmber';
 // Interface:
 import { IMixerProtocolGeneric} from './MixerProtocolInterface'
 
@@ -24,14 +27,17 @@ export const MixerProtocolPresets: { [key: string]: IMixerProtocolGeneric } = Ob
     behringerxrmaster: BehringerXrMaster,
     midasMaster: MidasMaster,
     genericMidi: GenericMidi,
-    lawoClient: LawoClient,
+    lawoRelayVrx4: LawoRelayVrx4,
+    lawoMC2: LawoMC2,
+    lawoRuby: LawoRuby,
     dmxis: DMXIS,
     yamahaQlCl: YamahaQLCL,
     sslSystemT: SSLSystemT,
+    studerOnAirMaster: StuderOnAirMaster,
     studerVistaMaster: StuderVistaMaster,
-}, CasparCGMaster !== undefined ? {
+}, {
     casparCGMaster: CasparCGMaster
-} : {});
+});
 /*
 */
 

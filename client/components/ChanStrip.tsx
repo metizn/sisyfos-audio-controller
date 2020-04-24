@@ -21,6 +21,7 @@ import {
     SOCKET_SET_AUX_LEVEL 
 } from '../../server/constants/SOCKET_IO_DISPATCHERS';
 import CcgChannelInputSettings from './CcgChannelSettings';
+import ReductionMeter from './ReductionMeter';
 
 interface IChanStripInjectProps {
     label: string,
@@ -195,6 +196,14 @@ class ChanStrip extends React.PureComponent<IChanStripProps & IChanStripInjectPr
         )
     }
 
+    gainReduction() {
+        return (
+            <div className="parameter-text">
+                Gain Red.
+                <ReductionMeter faderIndex = {this.props.faderIndex}/>
+            </div>
+        )
+    }
     delay() {
         return (
             <React.Fragment>
@@ -364,12 +373,7 @@ class ChanStrip extends React.PureComponent<IChanStripProps & IChanStripInjectPr
         )
     }
     parameters() {
-        if (this.props.selectedProtocol.includes("caspar")) {
-            return (
-                <CcgChannelInputSettings channelIndex={this.props.faderIndex} />
-            )
-        }
-        else {
+        if (this.props.offtubeMode) {
             return (
                 <div className="parameters">
                     <div className="group-text">
@@ -388,6 +392,7 @@ class ChanStrip extends React.PureComponent<IChanStripProps & IChanStripInjectPr
                         <p className="zero-comp">______</p>
                         {this.ratio()}
                         <p className="zero-comp">______</p>
+                        {this.gainReduction()}
                         <p className="horizontal-space"></p>
                         {this.delay()}
 
@@ -420,6 +425,8 @@ class ChanStrip extends React.PureComponent<IChanStripProps & IChanStripInjectPr
                     </ul>
                 </div>
             )
+        } else {
+            return null
         }
     }
 
@@ -455,9 +462,10 @@ class ChanStrip extends React.PureComponent<IChanStripProps & IChanStripInjectPr
                         }
                     </div>
                     <hr/>
-                    {this.props.offtubeMode ?
+                    {this.props.selectedProtocol.includes("caspar") ?
+                        <CcgChannelInputSettings channelIndex={this.props.faderIndex} />
+                    :
                         this.parameters() 
-                        : null
                     }
                 </div>
             )

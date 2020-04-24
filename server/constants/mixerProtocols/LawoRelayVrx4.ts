@@ -1,10 +1,10 @@
 import { IMixerProtocol, emptyMixerMessage } from '../MixerProtocolInterface';
 
-export const LawoClient: IMixerProtocol = {
+export const LawoRelayVrx4: IMixerProtocol = {
     protocol: 'EMBER',
     label: 'Lawo Relay VRX4 - client',
-    mode: "master", //master (ignores mixers faderlevel, and use faderlevel as gain preset),
-                    //client (use feedback from mixers fader level)
+    mode: "master",
+    FADE_DISPATCH_RESOLUTION: 15,
     leadingZeros: false,  //some OSC protocols needs channels to be 01, 02 etc.
     pingCommand: [emptyMixerMessage()],
     pingResponseCommand: [emptyMixerMessage()],
@@ -14,7 +14,6 @@ export const LawoClient: IMixerProtocol = {
         channelTypeName: 'CH',
         channelTypeColor: '#2f2f2f',
         fromMixer: {
-            CHANNEL_FADER_LEVEL: [emptyMixerMessage()],
             CHANNEL_OUT_GAIN: [{
                 mixerMessage: 'R3LAYVRX4/Ex/GUI/FaderSlot_{channel}/FaderPosition',
                 value: 0,
@@ -24,6 +23,7 @@ export const LawoClient: IMixerProtocol = {
                 zero: 75
             }],
             CHANNEL_VU: [emptyMixerMessage()],
+            CHANNEL_VU_REDUCTION: [emptyMixerMessage()],
             CHANNEL_NAME: [{
                 mixerMessage: '',
                 value: 0,
@@ -47,20 +47,12 @@ export const LawoClient: IMixerProtocol = {
             CHANNEL_MUTE_OFF: [emptyMixerMessage()]
         },
         toMixer: {
-            CHANNEL_FADER_LEVEL: [{
+            CHANNEL_OUT_GAIN: [{
                 mixerMessage: 'R3LAYVRX4/Ex/GUI/FaderSlot_{channel}/FaderPosition',
                 value: 0,
                 type: 'real',
                 min: 0,
                 max: 100,
-                zero: 75
-            }],
-            CHANNEL_OUT_GAIN: [{
-                mixerMessage: 'R3LAYVRX4/Ex/GUI/FaderSlot_{channel}/Amplification',
-                value: 0,
-                type: 'real',
-                min: -200,
-                max: 20,
                 zero: 0
 
             }],

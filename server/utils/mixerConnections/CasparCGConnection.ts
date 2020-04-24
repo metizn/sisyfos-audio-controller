@@ -3,6 +3,7 @@ const osc = require('osc')
 const fs = require('fs')
 import * as path from 'path';
 import { CasparCG } from 'casparcg-connection'
+import { socketServer } from '../../expressHandler'
 
 //Utils:
 import { store, state } from '../../reducers/store'
@@ -11,6 +12,7 @@ import { IChannel } from '../../reducers/channelsReducer';
 import { SET_PRIVATE } from  '../../reducers/channelActions'
 import { SET_VU_LEVEL, SET_CHANNEL_LABEL } from '../../reducers/faderActions'
 import { logger } from '../logger'
+import { SOCKET_SET_VU } from '../../constants/SOCKET_IO_DISPATCHERS';
 
 interface CommandChannelMap {
     [key: string]: number
@@ -27,7 +29,7 @@ const OSC_PATH_PRODUCER_CHANNEL_LAYOUT = /\/channel\/(\d+)\/stage\/layer\/(\d+)\
 
 export class CasparCGConnection {
     mixerProtocol: ICasparCGMixerGeometry;
-    connection: any;
+    connection: CasparCG;
     oscClient: any;
     oscCommandMap: { [key: string]: CommandChannelMap } = {};
 
@@ -75,7 +77,7 @@ export class CasparCGConnection {
             logger.info('CasparCG Audio geometry file has not been created')
         }
         if (geometry) {
-            this.mixerProtocol.fromMixer = geometry.fromMixer || this.mixerProtocol.fromMixer 
+            this.mixerProtocol.fromMixer = geometry.fromMixer || this.mixerProtocol.fromMixer
             this.mixerProtocol.toMixer = geometry.toMixer || this.mixerProtocol.toMixer
             this.mixerProtocol.channelLabels = geometry.channelLabels || this.mixerProtocol.channelLabels
             this.mixerProtocol.sourceOptions = geometry.sourceOptions || this.mixerProtocol.sourceOptions
@@ -100,10 +102,15 @@ export class CasparCGConnection {
                     store.dispatch({
                         type: SET_VU_LEVEL,
                         channel: index,
-                        // CCG returns "produced" audio levels, before the Volume mixer transform
-                        // We therefore want to premultiply this to show useful information about audio levels
-                        level: Math.min(1, message.args[0] * state.faders[0].fader[index].faderLevel)
+                        level: message.args[0]
                     });
+                    socketServer.emit(
+                        SOCKET_SET_VU,
+                        {
+                            faderIndex: index,
+                            level: message.args[0]
+                        }
+                    )
                 } else if (this.mixerProtocol.sourceOptions) {
                     const m = message.address.split('/');
 
@@ -130,11 +137,12 @@ export class CasparCGConnection {
                     } else if (m[1] === 'channel' && m[6] === 'file' && m[7] === 'path') {
                         const index = this.mixerProtocol.sourceOptions.sources.findIndex(i => i.channel === parseInt(m[2], 10) && i.layer === parseInt(m[5]))
                         if (index >= 0) {
+                            const value = typeof message.args[0] === 'string' ? message.args[0] : message.args[0].low
                             store.dispatch({
                                 type: SET_PRIVATE,
                                 channel: index,
                                 tag: 'file_path',
-                                value: message.args[0].low
+                                value
                             })
                         }
                     }
@@ -236,6 +244,22 @@ export class CasparCGConnection {
                             undefined,
                             undefined,
                             value);
+                    case 'layer-producer':
+                        return this.connection.playRoute(
+                            channel,
+                            layer,
+                            file,
+                            undefined,
+                            undefined,
+                            undefined,
+                            undefined,
+                            undefined,
+                            undefined,
+                            undefined,
+                            undefined,
+                            value,
+                            undefined)
+
                 }
             }
             return Promise.reject('Unknown operation');
@@ -309,19 +333,19 @@ export class CasparCGConnection {
             }
         }
     }
-    
+
     updateMuteState(channelIndex: number, muteOn: boolean) {
         return true
-    } 
+    }
 
     updateNextAux(channelIndex: number, level: number) {
         return true
-    } 
+    }
 
     updateThreshold(channelIndex: number, level: number) {
         return true
     }
-    updateRatio(channelIndex: number, level: number) {        
+    updateRatio(channelIndex: number, level: number) {
         return true
     }
     updateDelayTime(channelIndex: number, level: number) {

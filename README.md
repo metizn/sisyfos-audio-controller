@@ -19,6 +19,14 @@ It´s fast to see what faders are on-aie, and whether they are PGM level or Voic
 <img src="Docs/pix/SisyfosChannelStripdescription.jpg">
 
 
+### If you need a MiniMonitorView for a client:
+run webpage with 
+```
+localhost/?minimonitor=1
+```
+
+<img src="Docs/pix/minimonitorview.png">
+
 
 
 ### Routing of Faders to Channels
@@ -66,8 +74,14 @@ The levels are:
 ### Open GUI in browser:
 ```
 localhost:1176 (or whatever ip you use for Sisyfos Nodejs/Docker)
+```
 IF you wan´t to disable settings:
+```
 localhost:1176/?settings=0
+```
+To see the MiniMonitorView:
+```
+localhost:1176/?minimonitor=1
 ``` 
 
 ## Settings:
@@ -114,7 +128,12 @@ As NEXT has been implemented, and PFL usually only work on on channel at a time,
   * Ip - MIDI based Protocol
   * Port 50000
   * Stable implementation of 2-ways Fader and Mute
-
+* Studer Vista 1-5-9 (untested)
+  * mono, stereo, 51 channels fader level from Sisyfos TO mixer
+  * No 2 way support for now
+* Studer OnAir 3000 (untested)
+  * channel 1 to 24 fader level from Sisyfos TO mixer
+  * No 2 way support for now
 
 ## Automation Support:
 It´s possible to control the Producers-Audio-Mixer from an automationsystem, for it to act as middleware.
